@@ -26,24 +26,21 @@ Esta versión permite depósitos con múltiples tokens, realiza swaps automátic
 **Remix**
 
 1) Abrir https://remix.ethereum.org
-2) Crear carpeta /contracts y pegar los archivos: KipuBankV3.sol, MockUSDC.sol, MockToken.sol, MockUniswapV2Router.sol, MockWETH.sol (opcional).
+2) Crear carpeta /contracts y pegar los archivos: KipuBankV3.sol, MockUSDC.sol, MockToken.sol, MockUniswapV2Router.sol.
 3) Compiler -> Solidity 0.8.17 -> enable optimizer (runs 200) -> Compile all.
-4) Conectar MetaMask en Sepolia (o usar Injected Web3 con cuenta local).
-5) Desplegar mocks si no tienes router/USDC reales:
+4) Conectar MetaMask en Sepolia.
+5) Desplegar mocks::
    - Deploy MockUSDC args: "USDC","USDC",6
-   - Deploy MockWETH (opcional)
-   - Deploy MockUniswapV2Router args: (mockUSDCAddress, mockWETHAddress)
+   - Deploy MockUniswapV2Router args: (mockUSDCAddress, 0x0000000000000000000000000000000000000000)
    - Mint USDC to router: MockUSDC.mint(routerAddress, 1000000 * 10**6)
 6) Deploy KipuBankV3 args:
    - _router = router address
    - _usdc = mockUSDC address
    - _bankCap = 1000000 * 10**6 => 1000000000000
 7) Probar flow:
+   - Deploy MockToekn args: "TOK", "TOK", 6 
    - Mint MockToken to user and approve KipuBankV3
    - Call depositERC20(token, amount, minOut=0, deadline=unix+3600)
    - Call depositETH with value and minOut=0 (if router funded)
 8) Verificar:
    - KipuBankV3.balanceOf(user), totalUSDC, contract USDC balance
-Notas:
-- Estos mocks son para testing en Remix/testnets. No usar en mainnet.
-- En producción usar UniswapV2 Router real y manejar slippage (minOut) y seguridad adicional.
